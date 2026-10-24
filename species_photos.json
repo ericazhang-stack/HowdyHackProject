@@ -1,0 +1,50 @@
+{
+  "Mytilus californianus": {
+    "url": "/assets/mytilus-californianus.jpg",
+    "attribution": "(c) Martin Kalfatovic, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/753503255",
+    "license": "cc-by"
+  },
+  "Anthopleura elegantissima": {
+    "url": "/assets/anthopleura-elegantissima.jpg",
+    "attribution": "(c) Devon Bradley, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/750906517",
+    "license": "cc-by"
+  },
+  "Pisaster ochraceus": {
+    "url": "/assets/pisaster-ochraceus.jpg",
+    "attribution": "no rights reserved",
+    "source": "https://www.inaturalist.org/photos/248324436",
+    "license": "cc0"
+  },
+  "Strongylocentrotus purpuratus": {
+    "url": "/assets/strongylocentrotus-purpuratus.jpg",
+    "attribution": "(c) Marilynne Box, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/755076819",
+    "license": "cc-by"
+  },
+  "Anthopleura xanthogrammica": {
+    "url": "/assets/anthopleura-xanthogrammica.jpg",
+    "attribution": "(c) Julia Coty, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/751168032",
+    "license": "cc-by"
+  },
+  "Littorina littorea": {
+    "url": "/assets/littorina-littorea.jpg",
+    "attribution": "(c) Susan Marley, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/754561412",
+    "license": "cc-by"
+  },
+  "Mytilus edulis": {
+    "url": "/assets/mytilus-edulis.jpg",
+    "attribution": "(c) Susan Marley, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/754561298",
+    "license": "cc-by"
+  },
+  "Strongylocentrotus droebachiensis": {
+    "url": "/assets/strongylocentrotus-droebachiensis.jpg",
+    "attribution": "(c) Mark Costello, some rights reserved (CC BY)",
+    "source": "https://www.inaturalist.org/photos/754280359",
+    "license": "cc-by"
+  }
+}
