@@ -17,6 +17,8 @@ NOAA/iNaturalist caches are best-effort in-memory caches in each function instan
 
 The static build and all five Python entrypoints were tested locally. A live Vercel deployment has not been verified because this workspace has no connected Vercel account. Runtime reference: [Vercel Python functions](https://vercel.com/docs/functions/runtimes/python/api-directory).
 
+If Vercel reports that a `functions` pattern matches no Serverless Functions, use the current `vercel.json`: it omits that optional wildcard configuration and lets Vercel discover the explicit `handler` classes in `api/`. Make sure all five `api/*.py` files are committed in the repository connected to Vercel. Set Root Directory to the folder containing `api/`, `vercel.json` and `build_static.py`, **not** `public/` or `api/`. Leave Framework Preset as Other and remove any dashboard overrides pointing to another build/output folder. Deploy the latest commit rather than rebuilding an older deployment's source.
+
 ## Optional local preview
 
 ```powershell
