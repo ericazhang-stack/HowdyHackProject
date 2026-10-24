@@ -1,8 +1,14 @@
 let sites = [], species = [], currentSpot, map, chart, nextLow, guideHeight, activeZoneFilter = 'all', requestNumber = 0;
 let nearbySpecies=[], wildlifeMessage='Choose a destination to load nearby records.', selectedStationMarker, upcomingLows=[];
 const el = id => document.getElementById(id);
+const filePreview=window.location.protocol==='file:';
+const assetURL=path=>filePreview?path.replace(/^\//,'./'):path;
 const localTime = value => new Date(value).toLocaleString('en-US', {timeZone:currentSpot?.timezone || 'America/Los_Angeles', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short'});
 async function api(path) {
+    if(filePreview){
+        if(path==='/api/sites' && window.TIDEPOOL_PREVIEW)return window.TIDEPOOL_PREVIEW;
+        throw new Error('Live data needs the Python backend. Double-click start_local.pyw for the full local site, or open the deployed Vercel URL.');
+    }
     const response = await fetch(path);
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'Request failed');
@@ -143,7 +149,7 @@ function renderSpecies(height = guideHeight) {
         card.className='bg-ocean-deep rounded-2xl border border-teal-500/20 p-5';
         if(s.photo) {
             const figure=document.createElement('figure');figure.className='organism-photo';
-            const image=document.createElement('img');image.src=s.photo.url;image.alt=`${s.name} (${s.sci})`;image.loading='lazy';image.width=600;image.height=400;
+            const image=document.createElement('img');image.src=assetURL(s.photo.url);image.alt=`${s.name} (${s.sci})`;image.loading='lazy';image.width=600;image.height=400;
             const caption=document.createElement('figcaption');
             const credit=document.createElement('a');credit.href=s.photo.source;credit.target='_blank';credit.rel='noopener';credit.textContent=s.photo.attribution;
             caption.append(credit);figure.append(image,caption);card.append(figure);
@@ -166,6 +172,10 @@ function filterSpecies(zone) {
 }
 window.onload=async()=>{
     el('recommendation-text').setAttribute('role','status');
+    if(filePreview){
+        el('file-preview-notice').hidden=false;
+        el('wildlife-view').value='guide';
+    }
     try {
         const data=await api('/api/sites');sites=data.sites;species=data.species;
         el('preset-select').replaceChildren();
@@ -234,10 +244,10 @@ window.onload=async()=>{
         el('preset-select').value='fitzgerald';handlePresetChange();
         const heroTags=document.querySelector('.hero-tags');heroTags.replaceChildren();
         [`${sites.length} curated destinations`,`${data.station_count} NOAA stations`,'Nearby wildlife photos'].forEach(text=>{const tag=document.createElement('span');tag.textContent=text;heroTags.append(tag);});
-        const sticker=(name,cls)=>{const node=document.createElement('span');node.className='sea-sticker '+cls;node.setAttribute('aria-hidden','true');node.innerHTML=`<svg viewBox="0 0 160 160"><use href="/sea-friends.svg#${name}"></use></svg>`;return node;};
+        const sticker=(name,cls)=>{const node=document.createElement('span');node.className='sea-sticker '+cls;node.setAttribute('aria-hidden','true');node.innerHTML=`<svg viewBox="0 0 160 160"><use href="#${name}"></use></svg>`;return node;};
         const friends=document.createElement('div');friends.className='hero-friends';
         ['octopus','turtle','crab','star'].forEach((name,i)=>friends.append(sticker(name,'friend-'+i)));document.querySelector('.hero').append(friends);
         document.querySelectorAll('main > section, .care').forEach((section,i)=>section.append(sticker(['fish','star','crab','turtle'][i%4],['friend-left','friend-bottom-right','friend-heading','friend-bottom-left','friend-inline'][i%5])));
         setInterval(renderCountdown,1000);
-    } catch(error) {el('recommendation-text').textContent='Start the Python server with python app.py and open http://127.0.0.1:8000. '+error.message;}
+    } catch(error) {el('recommendation-text').textContent='Destination data could not be loaded. Refresh the page or try again shortly. '+error.message;}
 };

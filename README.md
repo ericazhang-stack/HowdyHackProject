@@ -2,13 +2,32 @@
 
 A Python beach-hackathon prototype with a cream-and-pastel-blue interface, sea-animal clipart, tide tables, and organism photographs. Use Python 3.10 or newer. NOAA and iNaturalist need no API key or pip dependencies. The app lists US destinations and US/US-territory NOAA stations only.
 
-## Run
+## Deploy on Vercel without PowerShell
+
+1. Save this project in a GitHub repository. GitHub Desktop or GitHub's browser upload can do this without terminal commands. Include `api/`, the root Python modules, `assets/`, and the JSON data files, alongside the HTML/CSS/JavaScript and deployment configuration.
+2. In the Vercel dashboard, choose **Add New → Project** and import that repository.
+3. Set **Framework Preset** to **Other** and **Root Directory** to the folder containing `vercel.json` (the repository root if you uploaded this project directly). Keep any custom dashboard build/output overrides disabled: the included configuration sets **Build Command** to `python3 build_static.py` and **Output Directory** to `public`.
+4. Click **Deploy**. Open the HTTPS URL Vercel returns. Your visitors can use the website without installing Python or running PowerShell, and your computer does not need to stay on.
+
+No API keys or environment variables are needed for the current NOAA/iNaturalist features. Later GitHub commits trigger new deployments. If you already have a Vercel project, check those same root/preset settings and redeploy after committing these changes.
+
+The static page, script, stylesheet, SVG clipart and local organism photos are copied into `public/` during the build and served by Vercel. Five native Python functions in `api/` reuse the existing backend for `/api/sites`, `/api/stations`, `/api/location`, `/api/tides`, and `/api/wildlife`. `.python-version` selects Python 3.12. No long-running local server is required on Vercel. Source code and metadata JSON files are excluded from the public build; the Python function bundle retains the metadata needed for lookups.
+
+NOAA/iNaturalist caches are best-effort in-memory caches in each function instance, not shared persistent storage. Upstream timeouts/unavailability still produce the app's normal error states. Update source metadata locally and commit it to refresh the deployed catalogue; deployed functions do not write to the repository.
+
+The static build and all five Python entrypoints were tested locally. A live Vercel deployment has not been verified because this workspace has no connected Vercel account. Runtime reference: [Vercel Python functions](https://vercel.com/docs/functions/runtimes/python/api-directory).
+
+## Optional local preview
 
 ```powershell
 python app.py
 ```
 
-Open http://127.0.0.1:8000. Opening index.html directly will not work. Stop with Ctrl+C. Restart the server after Python or dataset changes, and refresh the browser after frontend changes.
+For a full local website without PowerShell, double-click **start_local.pyw** in this folder with Python installed. It starts the backend and opens http://127.0.0.1:8000 in your browser. If this app is already running on that port, it opens the existing site.
+
+You can also open **index.html** directly: relative CSS/JavaScript links, embedded clipart symbols and bundled preview-data.js let the styled interface, destinations, map and regional photo guide load without a server. This file preview explicitly labels live tide and wildlife APIs as unavailable; an HTML file cannot execute the Python backend. Map tiles and external libraries still need internet access.
+
+For terminal-based local development, the command above opens the same site at http://127.0.0.1:8000; stop it with Ctrl+C. Restart after Python or dataset changes and refresh after frontend changes. Refresh the direct-file dataset with `python prepare_preview.py` when changing destination/species data.
 
 If Windows points to a broken Store alias:
 
