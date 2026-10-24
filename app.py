@@ -8,7 +8,7 @@ from urllib.parse import parse_qs, urlencode, urlparse
 from urllib.request import urlopen, Request
 from concurrent.futures import ThreadPoolExecutor
 from coastal_sites import coastal_sites
-from data_sources import load_catalogue, assign_station, station_site, coordinate_site, wildlife, worldtides
+from data_sources import load_catalogue, assign_station, station_site, coordinate_site, wildlife
 from tide_curve import with_fallback_curve
 
 ROOT = Path(__file__).resolve().parent
@@ -25,15 +25,13 @@ SITES += [
     dict(id='ruby', name='Ruby Beach · Olympic National Park', lat=47.710, lng=-124.416, station='9442396', station_name='La Push', country='United States', region='Washington', timezone='America/Los_Angeles', habitat='pacific', source='https://www.nps.gov/olym/planyourvisit/tidepool-activities.htm'),
     dict(id='wonderland', name='Wonderland · Acadia National Park', lat=44.229, lng=-68.321, station='8413320', station_name='Bar Harbor', country='United States', region='Maine', timezone='America/New_York', habitat='atlantic', source='https://www.nps.gov/thingstodo/tidepooling-wonderland.htm'),
     dict(id='schoodic', name='Schoodic Peninsula · Acadia', lat=44.334, lng=-68.060, station='8413320', station_name='Bar Harbor', country='United States', region='Maine', timezone='America/New_York', habitat='atlantic', source='https://www.nps.gov/acad/planyourvisit/tidepooling.htm'),
-    dict(id='wembury', name='Wembury Beach', lat=50.316, lng=-4.085, station=None, station_name=None, country='United Kingdom', region='Devon', timezone='Europe/London', habitat='international', source='https://www.nationaltrust.org.uk/visit/devon/wembury/index'),
-    dict(id='longreef', name='Long Reef Aquatic Reserve', lat=-33.740, lng=151.312, station=None, station_name=None, country='Australia', region='New South Wales', timezone='Australia/Sydney', habitat='international', source='https://www.dpird.nsw.gov.au/fishing/marine-protected-areas/aquatic-reserves/long-reef-aquatic-reserve'),
-    dict(id='goatisland', name='Goat Island Marine Reserve', lat=-36.269, lng=174.797, station=None, station_name=None, country='New Zealand', region='Auckland', timezone='Pacific/Auckland', habitat='international', source='https://www.doc.govt.nz/goatisland'),
 ]
 SITES += coastal_sites()
 for site in SITES:
     site.setdefault('kind', 'Tidepool shore')
 CATALOGUE = load_catalogue()
-STATIONS = CATALOGUE['stations']
+US_REGIONS = set('AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR VI GU AS MP UM'.split())
+STATIONS = [station for station in CATALOGUE['stations'] if station.get('state') in US_REGIONS]
 SITES = [assign_station(site, STATIONS) for site in SITES]
 SITE_INDEX = {site['id']: site for site in SITES}
 STATION_INDEX = {'noaa-' + station['id']: station_site(station) for station in STATIONS}
@@ -88,7 +86,7 @@ def forecast(site, date):
     if abs((start.date() - datetime.now(timezone.utc).date()).days) > 365:
         raise ValueError('Choose a date within one year of today.')
     if not site['station']:
-        return with_fallback_curve(worldtides(site, date))
+        return with_fallback_curve(dict(site=site, available=False, curve=[], lows=[], events=[], message='No nearby US NOAA tide reference is available for these coordinates. Choose a listed US destination or station.'))
     params = dict(product='predictions', application='TidePoolExplorer', station=site['station'],
                   begin_date=(start - timedelta(days=1)).strftime('%Y%m%d'), end_date=(start + timedelta(days=2)).strftime('%Y%m%d'),
                   datum='MLLW', time_zone='gmt', units='english', format='json')

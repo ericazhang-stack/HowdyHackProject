@@ -1,7 +1,6 @@
 """Public data adapters. Tide gauges are not verified tidepool destinations."""
 import json
 import math
-import os
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -65,27 +64,6 @@ def coordinate_site(lat, lng, stations):
         if km<=75:
             site.update(station=nearest['id'],station_name=nearest['name'],station_type=nearest['type'],station_distance_km=round(km,1))
     return site
-
-def worldtides(site, date):
-    key = os.environ.get('WORLDTIDES_API_KEY')
-    if not key:
-        return dict(site=site, available=False, curve=[], lows=[], events=[],
-                    message='Global tide predictions are not connected for this location yet. Check official local tide tables. A WorldTides connection can be configured by the app owner.')
-    params = dict(heights='', extremes='', date=date, days=2, lat=site['lat'], lon=site['lng'],
-                  datum='MSL', localtime='', step=3600, key=key)
-    # Provider terms permit per-user requests; do not share/cache predictions across users.
-    request = Request('https://www.worldtides.info/api/v3?' + urlencode(params), headers={'User-Agent':'TidePoolExplorer/1.0'})
-    with urlopen(request, timeout=20) as response:
-        data = json.load(response)
-    if data.get('status') != 200:
-        raise RuntimeError('WorldTides could not provide predictions.')
-    stamp = lambda row: datetime.fromtimestamp(row['dt'], timezone.utc).isoformat()
-    events = [dict(time=stamp(p), height=float(p['height'])*3.280839895, type='L' if p['type'].lower() == 'low' else 'H') for p in data.get('extremes', [])]
-    return dict(site=site, available=True, source='WorldTides', datum=data.get('responseDatum', 'MSL'), units='feet',
-                curve=[dict(time=stamp(p), height=float(p['height'])*3.280839895) for p in data.get('heights', [])],
-                events=events, lows=[e for e in events if e['type']=='L'], attribution=data.get('copyright', ''),
-                prediction_location=dict(lat=data.get('responseLat'), lng=data.get('responseLon')),
-                fetched_at=datetime.now(timezone.utc).isoformat())
 
 def wildlife(site):
     taxa_path = ROOT / 'marine_taxa.json'

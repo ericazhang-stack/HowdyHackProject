@@ -53,4 +53,23 @@ def with_fallback_curve(result):
         result['chart_note'] = ('Estimated visual curve between provider high/low events, including adjacent-day turning points. Dashed lines are interpolation, not hourly provider predictions or observed measurements. No extrapolation.' if result['curve'] else 'Not enough consecutive high/low events to estimate a curve. Available events remain in the table.')
     else:
         result['curve_kind'] = 'none'
+    result['timer_lows'] = timer_lows(result)
     return result
+
+def timer_lows(result):
+    """Prefer exact provider low events; otherwise find bracketed curve minima."""
+    known = result.get('lows') or [p for p in result.get('events', []) if p.get('type') == 'L']
+    if known:
+        return [dict(p, timing_source='provider') for p in sorted(known,key=lambda p:p['time'])]
+    points = sorted(result.get('curve', []),key=lambda p:p['time'])
+    lows = []
+    for before, point, after in zip(points,points[1:],points[2:]):
+        heights = [p.get('height') for p in (before,point,after)]
+        if any(h is None or not math.isfinite(h) for h in heights):
+            continue
+        stamps = [datetime.fromisoformat(p['time'].replace('Z','+00:00')).timestamp() for p in (before,point,after)]
+        if not all(0 < b-a <= 3*3600 for a,b in zip(stamps,stamps[1:])):
+            continue
+        if heights[1] < heights[0] and heights[1] <= heights[2]:
+            lows.append(dict(point,timing_source='curve estimate'))
+    return lows

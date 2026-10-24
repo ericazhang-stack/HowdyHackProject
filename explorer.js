@@ -1,5 +1,5 @@
 let sites = [], species = [], currentSpot, map, chart, nextLow, guideHeight, activeZoneFilter = 'all', requestNumber = 0;
-let nearbySpecies=[], wildlifeMessage='Choose a destination to load nearby records.', selectedStationMarker;
+let nearbySpecies=[], wildlifeMessage='Choose a destination to load nearby records.', selectedStationMarker, upcomingLows=[];
 const el = id => document.getElementById(id);
 const localTime = value => new Date(value).toLocaleString('en-US', {timeZone:currentSpot?.timezone || 'America/Los_Angeles', month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZoneName:'short'});
 async function api(path) {
@@ -33,7 +33,7 @@ function handleCustomCoords() {
     };
     const closest = [...sites].sort((a,b) => distance(a)-distance(b))[0];
     if (distance(closest)>150) {
-        el('recommendation-text').textContent = 'No listed destination within 150 km. Browse the international destination menu.'; return;
+        el('recommendation-text').textContent = 'No listed destination within 150 km. Browse the US destination menu.'; return;
     }
     closest.select();
 }
@@ -46,6 +46,8 @@ function useMyLocation() {
 async function refreshData() {
     const request = ++requestNumber;
     nextLow = null;
+    upcomingLows=[];
+    renderCountdown();
     guideHeight = undefined;
     nearbySpecies=[];
     wildlifeMessage='Loading nearby iNaturalist observations and photos…';
@@ -64,22 +66,22 @@ async function refreshData() {
             el('score-status').textContent='LOCATION GUIDE';
             el('low-tide-time-label').textContent='Local tide tables required';
             el('recommendation-text').textContent=data.message;
-            el('chart-note').textContent='No prediction data available. Global coverage requires a configured WorldTides account.';
+            el('chart-note').textContent='No prediction data available for this US location.';
             return;
         }
-        el('noaa-station-badge').textContent=data.source==='WorldTides' ? 'WorldTides global model' : `NOAA #${data.site.station} · ${data.site.station_name}`;
+        el('noaa-station-badge').textContent=`NOAA #${data.site.station} · ${data.site.station_name}`;
         el('datum-label').textContent=`${data.source} · feet relative to ${data.datum}`;
         el('chart-note').textContent=data.chart_note || `${data.source} predictions in destination local time. ${data.attribution || ''}`;
         const dateKey = value => new Intl.DateTimeFormat('en-CA',{timeZone:currentSpot.timezone,year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date(value));
         const points = data.curve.filter(p => dateKey(p.time)===el('visit-date').value);
         const lows = data.lows.filter(p => dateKey(p.time)===el('visit-date').value);
-        nextLow = lows.find(p => new Date(p.time)>new Date()) || null;
+        upcomingLows=dateKey(new Date())>el('visit-date').value ? [] : (data.timer_lows || data.lows || []).filter(p=>dateKey(p.time)>=el('visit-date').value && new Date(p.time)>new Date()).sort((a,b)=>Date.parse(a.time)-Date.parse(b.time));
+        renderCountdown();
         const best = lows.reduce((a,b) => !a || b.height<a.height ? b : a, null);
         const current = data.curve.reduce((a,b) => !a || Math.abs(new Date(b.time)-Date.now())<Math.abs(new Date(a.time)-Date.now())?b:a, null);
         const today = dateKey(new Date())===el('visit-date').value;
         el('score-number').textContent=best ? best.height.toFixed(1) : '—';
         el('score-status').textContent=`LOWEST TIDE · FT ${data.datum}`;
-        el('low-tide-time-label').textContent=nextLow ? `${localTime(nextLow.time)} (${nextLow.height.toFixed(1)} ft)` : 'No upcoming low on selected date';
         const distance=data.site.station_distance_km;
         const proxy=distance !== undefined ? ` Regional tide station: ${distance} km away by straight-line distance. Proximity does not establish matching tides or access.` : ' Model predictions do not describe individual pools.';
         el('recommendation-text').textContent=`${best ? 'Lowest tide: '+localTime(best.time)+'. ' : ''}${proxy} Check daylight, park hours, surf and closures before visiting. Updated ${localTime(data.fetched_at)}.`;
@@ -105,6 +107,14 @@ async function refreshData() {
         el('recommendation-text').textContent=error.message;
         el('chart-note').textContent='Tide data unavailable; no simulated curve or table is shown.';
     }
+}
+function renderCountdown(){
+    const now=Date.now();
+    nextLow=upcomingLows.find(p=>Date.parse(p.time)>now) || null;
+    el('countdown-caption').textContent=nextLow?.timing_source==='curve estimate' ? 'Countdown to estimated low · curve-based timing' : 'Countdown to next predicted low tide';
+    el('low-tide-time-label').textContent=nextLow ? `${localTime(nextLow.time)} (${nextLow.height.toFixed(1)} ft)${nextLow.timing_source==='curve estimate'?' · approximate':''}` : 'No upcoming low in the loaded prediction window';
+    const seconds=nextLow?Math.max(0,Math.floor((Date.parse(nextLow.time)-now)/1000)):null;
+    ['cd-hours','cd-mins','cd-secs'].forEach((id,i)=>el(id).textContent=seconds===null?'—':String(i===0?Math.floor(seconds/3600):i===1?Math.floor(seconds/60)%60:seconds%60).padStart(2,'0'));
 }
 async function loadWildlife(siteId, request) {
     try {
@@ -159,8 +169,8 @@ window.onload=async()=>{
     try {
         const data=await api('/api/sites');sites=data.sites;species=data.species;
         el('preset-select').replaceChildren();
-        const stateLabel=document.createElement('label');stateLabel.className='state-filter';stateLabel.textContent='Browse a state or country';
-        const stateSelect=document.createElement('select');stateSelect.setAttribute('aria-label','Filter destinations by state or country');stateSelect.add(new Option('All destinations','all'));
+        const stateLabel=document.createElement('label');stateLabel.className='state-filter';stateLabel.textContent='Browse a state or territory';
+        const stateSelect=document.createElement('select');stateSelect.setAttribute('aria-label','Filter destinations by state or territory');stateSelect.add(new Option('All destinations','all'));
         const states=[...new Set(sites.filter(s=>s.country==='United States').map(s=>s.region))].sort();
         states.forEach(state=>stateSelect.add(new Option(state,state)));
         [...new Set(sites.filter(s=>s.country!=='United States').map(s=>s.country))].sort().forEach(country=>stateSelect.add(new Option(country,country)));
@@ -228,9 +238,6 @@ window.onload=async()=>{
         const friends=document.createElement('div');friends.className='hero-friends';
         ['octopus','turtle','crab','star'].forEach((name,i)=>friends.append(sticker(name,'friend-'+i)));document.querySelector('.hero').append(friends);
         document.querySelectorAll('main > section, .care').forEach((section,i)=>section.append(sticker(['fish','star','crab','turtle'][i%4],['friend-left','friend-bottom-right','friend-heading','friend-bottom-left','friend-inline'][i%5])));
-        setInterval(()=>{
-            const seconds=nextLow?Math.max(0,Math.floor((new Date(nextLow.time)-Date.now())/1000)):null;
-            ['cd-hours','cd-mins','cd-secs'].forEach((id,i)=>el(id).textContent=seconds===null?'—':String(i===0?Math.floor(seconds/3600):i===1?Math.floor(seconds/60)%60:seconds%60).padStart(2,'0'));
-        },1000);
+        setInterval(renderCountdown,1000);
     } catch(error) {el('recommendation-text').textContent='Start the Python server with python app.py and open http://127.0.0.1:8000. '+error.message;}
 };

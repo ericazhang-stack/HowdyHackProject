@@ -1,11 +1,31 @@
 import unittest
 from datetime import datetime
-from tide_curve import estimated_curve, with_fallback_curve
+from tide_curve import estimated_curve, with_fallback_curve, timer_lows
 
 def event(hour, height, kind):
     return dict(time=f'2026-10-24T{hour:02}:00:00+00:00',height=height,type=kind)
 
 class CurveTests(unittest.TestCase):
+    def test_interpolated_curve_keeps_exact_provider_countdown_time(self):
+        result=with_fallback_curve(dict(curve=[],events=[event(0,4,'H'),event(6,0,'L'),event(12,4,'H')]))
+        self.assertEqual(result['timer_lows'][0]['time'],event(6,0,'L')['time'])
+        self.assertEqual(result['timer_lows'][0]['timing_source'],'provider')
+
+    def test_curve_only_data_has_an_estimated_timer(self):
+        points=[dict(time=event(h,0,'L')['time'],height=value) for h,value in [(0,3),(1,1),(2,2)]]
+        lows=timer_lows(dict(curve=points))
+        self.assertEqual(len(lows),1)
+        self.assertEqual(lows[0]['time'],event(1,0,'L')['time'])
+        self.assertEqual(lows[0]['timing_source'],'curve estimate')
+
+    def test_countdown_does_not_invent_minima_at_endpoints_or_gaps(self):
+        for points in [
+            [dict(time=event(0,0,'L')['time'],height=0),dict(time=event(1,0,'L')['time'],height=1)],
+            [dict(time=event(h,0,'L')['time'],height=v) for h,v in [(0,2),(6,0),(12,2)]],
+            [dict(time=event(h,0,'L')['time'],height=v) for h,v in [(0,None),(1,0),(2,2)]]
+        ]:
+            self.assertEqual(timer_lows(dict(curve=points)),[])
+
     def test_exact_extrema_bounded_monotonic_shape(self):
         points=estimated_curve([event(0,-1,'L'),event(6,5,'H'),event(12,0,'L')])
         by_time={p['time']:p['height'] for p in points}

@@ -1,6 +1,6 @@
-﻿# TidePool Explorer
+# TidePool Explorer
 
-A Python beach-hackathon prototype with a cream-and-pastel-blue interface, sea-animal clipart, tide tables, and organism photographs. Use Python 3.10 or newer. NOAA and iNaturalist need no API key or pip dependencies. Optional WorldTides global predictions require your own API key and credits.
+A Python beach-hackathon prototype with a cream-and-pastel-blue interface, sea-animal clipart, tide tables, and organism photographs. Use Python 3.10 or newer. NOAA and iNaturalist need no API key or pip dependencies. The app lists US destinations and US/US-territory NOAA stations only.
 
 ## Run
 
@@ -20,14 +20,14 @@ Internet is needed for tide providers, live iNaturalist records/photos, map tile
 
 ## Coverage
 
-- **51 destinations: 48 US destinations and 3 international guides.**
+- **48 US destinations.**
 - **At least two destinations in all 23 ocean-coastal US states**, including Alaska and Hawaii; California has four. This scope excludes Great Lakes-only states and US territories.
 - **All 48 curated US destinations now have regional NOAA tide references.** Existing station mappings are retained; other sites use the nearest prediction station within 75 km by straight-line distance. The UI shows that distance. This is an automatic regional reference, not validation that the station's tide matches the destination across headlands, estuaries or islands.
-- **All 3,502 stations in the downloaded NOAA prediction catalogue are searchable and paginated.** Select one to retrieve its table and nearby wildlife. Stations are separate from the 51 curated destinations and are not presented as confirmed tidepools. Availability varies by station and date.
+- **US and US-territory stations in the downloaded NOAA prediction catalogue are searchable and paginated.** Select one to retrieve its table and nearby wildlife. Stations are separate from the 48 curated destinations and are not presented as confirmed tidepools. Availability varies by station and date.
 - Natural tidepool shores, rocky shores, sandy beaches, reefs, estuaries and tidal marshes are separately labeled. Sandy and marshy states have coastal nature alternatives; these are not presented as confirmed rocky tidepools.
 - Each destination has an approximate coordinate, state/country, IANA time zone and official visitor-information link. The state/country filter narrows the destination menu. My Location finds a listed destination within 150 km; location coordinates are not stored.
-- International destinations: Wembury (UK), Long Reef (Australia), and Goat Island (New Zealand). All support live organism-photo queries. Their tide predictions use WorldTides when configured; otherwise the UI explains the missing connection.
-- Explore arbitrary coordinates using **Explore coordinates**. A NOAA reference is used when one is within 75 km; otherwise WorldTides is available when configured. Coordinates are unverified locations, not confirmed tidepools, and display times in UTC.
+- Custom coordinates can use a US NOAA station reference within 75 km; otherwise tide data is unavailable.
+
 
 The core destination data lives in app.py; expanded US entries live in coastal_sites.py. Sources are linked in each entry and in the map popup. Check visitor guidance for access routes and current closures. Approximate markers do not establish safe or legal access to the water.
 
@@ -59,6 +59,8 @@ If hourly requests fail but events succeed, the table and eligible interpolation
 
 Curated destinations use their local IANA time zone, including daylight-saving changes. NOAA catalogue stations and custom coordinates explicitly display UTC; no time zone is guessed from a state abbreviation.
 
+The countdown works for provider and interpolated curves. Exact provider low-tide times take priority. If only a sampled curve exists, the app finds interior minima and labels their timing approximate; it never infers a low from an endpoint or across a data gap. When today's last low has passed, it counts toward the next available low in the loaded window, including the following day. It advances only to real loaded events, and shows no countdown for past visit dates or missing predictions.
+
 Stations are regional proxies, not measurements inside a particular pool. If NOAA fails, the interface reports unavailable data and never generates fictional tides. Tide height alone does not establish safe access: check daylight, surf, park hours and closures. Observe wildlife in place and do not collect organisms or move rocks.
 
 ## Data sources and next steps
@@ -66,24 +68,10 @@ Stations are regional proxies, not measurements inside a particular pool. If NOA
 - [NOAA CO-OPS API](https://api.tidesandcurrents.noaa.gov/api/dev/): tide predictions; use hourly and hilo intervals.
 - [NOAA station metadata](https://api.tidesandcurrents.noaa.gov/mdapi/prod/): verify station type, location and datum support before integrating additional destinations.
 - [iNaturalist API](https://api.inaturalist.org/v1/docs/): live nearby organism records and openly licensed observation photos. Credits and source records appear on cards.
-- [WorldTides](https://www.worldtides.info/apidocs): optional global modeled tide heights and extremes. See connection instructions below.
 - [California Academy of Sciences](https://www.calacademy.org/community-science/californias-tidepools/tidepooling-101): tidepool planning guidance and initial destination references.
 - Official state park, NPS, BLM, wildlife-agency and local-manager links accompany each directory entry.
 
 Next steps: locally validate station-to-shore mappings, improve marine habitat filtering, integrate surf/daylight constraints, and use Flask or FastAPI for deployment beyond this local prototype.
-
-## Optional international/global tides
-
-Register with WorldTides and get a key from its developer account. Configure it in the server terminal, never in frontend JavaScript or a tracked file:
-
-```powershell
-$env:WORLDTIDES_API_KEY = 'your-own-key'
-python app.py
-```
-
-WorldTides calls consume account credits. The adapter only runs for locations without a NOAA reference, when explicitly selected/refreshed. It uses the provider's returned vertical datum (requested MSL), converts metres to feet, shows copyright attribution, and preserves the prediction point returned by the provider. MSL and MLLW are different datums; the app never labels global values as NOAA MLLW. Model coverage is provider-dependent, not a guarantee for every coordinate.
-
-The adapter does not share or cache WorldTides predictions across users; review the provider's license before public deployment. The live global integration could not be tested without your key; normalization and datum behavior are covered with mocked responses. No paid account was created and no paid API was called during development.
 
 ## Refresh catalogue metadata
 
@@ -99,14 +87,14 @@ This refreshes noaa_stations.json (the complete metadata snapshot and fetch time
 python -m unittest -v
 ```
 
-Tests cover coastal-state coverage, photo credits, station selection, catalogue pagination, subordinate stations, partial hourly failures, global datum conversion, wildlife sampling, frontend element references and API routes. Browser visual testing is not available in this environment.
+Tests cover coastal-state coverage, photo credits, station selection, catalogue pagination, subordinate stations, partial hourly failures, wildlife sampling, frontend element references and API routes. Browser visual testing is not available in this environment.
 
 Curve tests additionally verify exact extrema, bounded/monotonic segments, midnight coverage from adjacent days, missing-event gaps, estimation labels, and preservation of existing provider curves. The map disables tile wrapping and constrains panning to one world extent. The interface uses cream, lagoon, powder and periwinkle blues with clipart distributed along different section edges.
 
-An optional live public-source check (never calls WorldTides):
+An optional live US public-source check:
 
 ```powershell
 python verify_live.py
 ```
 
-During development, NOAA returned tide tables at all **43 distinct station references serving the 48 curated US destinations**. iNaturalist returned 12 photographed taxa each in samples at Fitzgerald, Galveston, Wembury, Long Reef and Goat Island. This does not verify every NOAA station, every date, exact pool conditions, or photo availability everywhere.
+During development, NOAA returned tide tables at all **43 distinct station references serving the 48 curated US destinations**. iNaturalist returned 12 photographed taxa each in samples at Fitzgerald and Galveston. This does not verify every NOAA station, every date, exact pool conditions, or photo availability everywhere.

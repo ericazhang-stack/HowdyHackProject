@@ -77,7 +77,7 @@ class ForecastTests(unittest.TestCase):
 
     def test_complete_station_catalogue_is_distinct_from_destinations(self):
         self.assertGreater(len(app.STATIONS), 3000)
-        self.assertEqual(len(app.SITES), 51)
+        self.assertEqual(len(app.SITES), 48)
         self.assertEqual(len(app.STATION_INDEX), len(app.STATIONS))
         station = next(iter(app.STATION_INDEX.values()))
         self.assertEqual(app.find_site(station['id']), station)
@@ -103,15 +103,6 @@ class ForecastTests(unittest.TestCase):
             result=app.forecast(dict(app.SITES[0],station_type='R'),datetime.now(timezone.utc).date().isoformat())
         self.assertEqual(result['curve'], [])
         self.assertEqual(len(result['lows']), 1)
-
-    def test_global_provider_does_not_label_msl_as_mllw(self):
-        from io import BytesIO
-        response=dict(status=200,responseDatum='MSL',copyright='WorldTides test attribution',heights=[dict(dt=1792843200,height=1)],extremes=[dict(dt=1792843200,height=-1,type='Low')])
-        with patch.dict(os.environ,{'WORLDTIDES_API_KEY':'test-key'}), patch.object(data_sources,'urlopen',return_value=BytesIO(json.dumps(response).encode())):
-            result=data_sources.worldtides(app.SITES[-1], '2026-10-24')
-        self.assertEqual(result['datum'],'MSL')
-        self.assertAlmostEqual(result['curve'][0]['height'],3.280839895)
-        self.assertEqual(result['attribution'],'WorldTides test attribution')
 
     def test_nearby_wildlife_uses_licensed_observation_photos(self):
         record=dict(id=123, observed_on='2026-10-24', taxon=dict(name='Test species',preferred_common_name='Test organism'),photos=[dict(id=99,url='https://static.inaturalist.org/photos/99/square.jpg',license_code='cc-by',attribution='Test photographer CC BY')])
@@ -143,17 +134,12 @@ class ForecastTests(unittest.TestCase):
         refs = set(re.findall(r"el\('([^']+)'\)", javascript))
         self.assertEqual(refs - ids, set())
 
-    def test_international_locations_do_not_use_noaa(self):
-        date = datetime.now(timezone.utc).date().isoformat()
-        international = [s for s in app.SITES if s['country'] != 'United States']
-        self.assertEqual(len(international), 3)
-        with patch.dict(os.environ, {}, clear=True), patch.object(app, 'fetch') as fetch:
-            for site in international:
-                result = app.forecast(site, date)
-                self.assertFalse(result['available'])
-                self.assertEqual(result['curve'], [])
-                self.assertEqual(result['lows'], [])
-            fetch.assert_not_called()
+    def test_international_destinations_are_removed(self):
+        self.assertEqual(len(app.SITES),48)
+        self.assertTrue(all(site['country']=='United States' for site in app.SITES))
+        for key in ['wembury','longreef','goatisland']:
+            self.assertIsNone(app.find_site(key))
+        self.assertTrue(all(station.get('state') in app.US_REGIONS for station in app.STATIONS))
 
     def test_location_metadata_and_species_regions(self):
         self.assertEqual(len({s['id'] for s in app.SITES}), len(app.SITES))
@@ -189,7 +175,7 @@ class ForecastTests(unittest.TestCase):
         root = 'http://127.0.0.1:' + str(server.server_port)
         try:
             with urlopen(root + '/api/sites') as response:
-                self.assertEqual(len(json.load(response)['sites']), 51)
+                self.assertEqual(len(json.load(response)['sites']), 48)
             with urlopen(root + '/api/stations?q=Honolulu') as response:
                 self.assertGreater(json.load(response)['total'],0)
             with urlopen(root + '/api/stations?offset=30') as response:

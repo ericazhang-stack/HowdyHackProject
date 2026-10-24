@@ -1,4 +1,4 @@
-"""Optional public-source smoke checks. Does not call paid WorldTides APIs."""
+"""Optional public-source smoke checks. US NOAA and iNaturalist only."""
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import app
@@ -16,7 +16,7 @@ if __name__=='__main__':
         results=list(pool.map(tide_check,unique.values()))
     print('NOAA tide tables:',sum(ok for _,ok,_ in results),'/',len(results),'unique curated proxy stations')
     print('Stations without event results:',[station for station,ok,_ in results if not ok])
-    for key in ['fitzgerald','us-galveston-island-state-park','wembury','longreef','goatisland']:
+    for key in ['fitzgerald','us-galveston-island-state-park']:
         try:
             result=app.wildlife(app.find_site(key))
             print(key,':',len(result['species']),'photographed taxa from',result['sampled_observations'],'sampled records')
