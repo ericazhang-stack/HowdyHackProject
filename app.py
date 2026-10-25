@@ -159,7 +159,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 return self.send(200, wildlife(site))
             except Exception:
-                return self.send(502, dict(error='Nearby observation data is unavailable. Try again later or view the regional guide.'))
+                return self.send(502, dict(error='Nearby observation data is unavailable. Try again later or explore the linked iNaturalist records.'))
         if url.path == '/api/tides':
             site = find_site(query.get('site', [''])[0])
             if site is None:

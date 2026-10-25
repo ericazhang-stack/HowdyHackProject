@@ -13,7 +13,7 @@ Planning a tidepool visit means checking several places for destinations, tide t
 - **48 US coastal destinations**, with at least two in each of the 23 ocean-coastal states, an interactive map, and official visitor-information links.
 - **A unified tide dashboard** with a chart, high/low table, lowest-tide summary, and countdown to the next predicted low.
 - **An estimated-curve algorithm** for stations without hourly predictions. It smoothly connects provider high/low events and clearly labels the result as an estimate.
-- **Nearby wildlife photo cards** with observation dates, photographer credits, and source links, plus a regional habitat guide.
+- **Nearby wildlife photo cards** with observation dates, photographer credits, and source links.
 - **Conservation-status filters** using standard IUCN categories available through GBIF and iNaturalist, with explicit labels for missing assessments.
 - **An ocean-inspired interface** with bubble-shaped photos, animated surf, playful sea animals, an ocean-depth gradient, and optional synthesized wave audio. Decorative animations respect reduced-motion preferences.
 
@@ -45,7 +45,7 @@ No API keys or third-party Python packages are required for the implemented inte
 
 **On Vercel:** Import the repository, select **Framework Preset: Other**, and use the folder containing `vercel.json` as the project root. The included configuration builds the frontend and exposes the Python APIs.
 
-Opening `index.html` directly provides a visual preview and regional guide; live tides and nearby wildlife require the Python backend or a deployed site. Internet access is required for live data and external libraries. Enable ocean audio with the header toggle.
+Opening `index.html` directly provides a visual preview; live tides and nearby wildlife require the Python backend or a deployed site. Internet access is required for live data and external libraries. Enable ocean audio with the header toggle.
 
 ## Important limitations
 

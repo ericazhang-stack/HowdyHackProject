@@ -1,4 +1,4 @@
-let sites = [], species = [], currentSpot, map, chart, nextLow, guideHeight, activeZoneFilter = 'all', requestNumber = 0;
+let sites = [], currentSpot, map, chart, nextLow, requestNumber = 0;
 let nearbySpecies=[], wildlifeMessage='Choose a destination to load nearby records.', selectedStationMarker, upcomingLows=[];
 const el = id => document.getElementById(id);
 const filePreview=window.location.protocol==='file:';
@@ -29,7 +29,6 @@ async function refreshData() {
     nextLow = null;
     upcomingLows=[];
     renderCountdown();
-    guideHeight = undefined;
     nearbySpecies=[];
     wildlifeMessage='Loading nearby iNaturalist observations and photos…';
     loadWildlife(currentSpot.id, request);
@@ -59,8 +58,6 @@ async function refreshData() {
         upcomingLows=dateKey(new Date())>el('visit-date').value ? [] : (data.timer_lows || data.lows || []).filter(p=>dateKey(p.time)>=el('visit-date').value && new Date(p.time)>new Date()).sort((a,b)=>Date.parse(a.time)-Date.parse(b.time));
         renderCountdown();
         const best = lows.reduce((a,b) => !a || b.height<a.height ? b : a, null);
-        const current = data.curve.reduce((a,b) => !a || Math.abs(new Date(b.time)-Date.now())<Math.abs(new Date(a.time)-Date.now())?b:a, null);
-        const today = dateKey(new Date())===el('visit-date').value;
         el('score-number').textContent=best ? best.height.toFixed(1) : '—';
         el('score-status').textContent=`LOWEST TIDE · FT ${data.datum}`;
         const distance=data.site.station_distance_km;
@@ -79,7 +76,6 @@ async function refreshData() {
             [localTime(p.time),p.type==='L'?'Low tide':'High tide',`${p.height.toFixed(2)} ft ${data.datum}`].forEach(value=>{const cell=document.createElement('td');cell.textContent=value;row.append(cell);});
             el('tide-table-body').append(row);
         });
-        guideHeight = data.datum==='MLLW' && !estimated ? (today && current ? current.height : best?.height) : undefined;
         renderSpecies();
     } catch(error) {
         if(request!==requestNumber)return;
@@ -109,22 +105,20 @@ async function loadWildlife(siteId, request) {
     }
     renderSpecies();
 }
-function renderSpecies(height = guideHeight) {
+function renderSpecies() {
     const grid=el('species-grid'); grid.replaceChildren();
-    const nearby=el('wildlife-view').value==='nearby';
-    el('wildlife-status').textContent=nearby?wildlifeMessage:'Regional habitat examples. These are not confirmed local sightings.';
-    document.querySelector('.tabs').hidden=nearby;
-    const regionalSpecies=nearby?nearbySpecies:species.filter(s=>s.habitat===currentSpot?.habitat);
+    el('wildlife-status').textContent=wildlifeMessage;
+    const records=nearbySpecies;
     const conservationFilter=el('conservation-filter').value;
-    const filteredSpecies=regionalSpecies.filter(s=>{
+    const filteredSpecies=records.filter(s=>{
         const code=s.conservation?.code || 'UNKNOWN';
-        return (nearby||activeZoneFilter==='all'||s.zone===activeZoneFilter) && (conservationFilter==='all'||code===conservationFilter||(conservationFilter==='threatened'&&['VU','EN','CR'].includes(code)));
+        return (conservationFilter==='all'||code===conservationFilter||(conservationFilter==='threatened'&&['VU','EN','CR'].includes(code)));
     });
-    if(!regionalSpecies.length) {
-        const note=document.createElement('p');note.className='empty-guide';note.textContent=nearby?'No nearby photo records to show yet. This does not mean no wildlife is present.':'A regional species guide has not been added here yet. Try nearby records or explore iNaturalist.';
+    if(!records.length) {
+        const note=document.createElement('p');note.className='empty-guide';note.textContent='No nearby photo records to show yet. This does not mean no wildlife is present.';
         const link=document.createElement('a');link.href=`https://www.inaturalist.org/observations?lat=${currentSpot.lat}&lng=${currentSpot.lng}&radius=10`;link.textContent='Browse nearby wildlife records ↗';link.target='_blank';link.rel='noopener';note.append(document.createElement('br'),link);grid.append(note);
     }
-    if(regionalSpecies.length&&!filteredSpecies.length){const message=document.createElement('p');message.className='empty-guide';message.textContent='No organisms in this sample match these filters. Try another category or choose All statuses.';grid.append(message);}
+    if(records.length&&!filteredSpecies.length){const message=document.createElement('p');message.className='empty-guide';message.textContent='No organisms in this sample match these filters. Try another category or choose All statuses.';grid.append(message);}
     filteredSpecies.forEach(s=>{
         const card=document.createElement('article');
         card.className='bg-ocean-deep rounded-2xl border border-teal-500/20 p-5';
@@ -154,25 +148,19 @@ function renderSpecies(height = guideHeight) {
         assessmentDetails.append(list);
         const desc=document.createElement('p'); desc.className='text-sm text-slate-300 my-3'; desc.textContent=s.desc;
         const note=document.createElement('p'); note.className='text-xs text-sand-300';
-        note.textContent=s.nearby ? `Last sampled record: ${s.observed_on || 'date unknown'} · ${s.sample_count} records in this sample. Intertidal zone unknown.` : `${s.zone} intertidal · Habitat guide; sighting not guaranteed. ${height !== undefined && s.zone==='low' && height>0.5 ? 'Lower pools may remain submerged at this predicted height.' : ''}`;
+        note.textContent=`Last sampled record: ${s.observed_on || 'date unknown'} ? ${s.sample_count} records in this sample.`;
         const link=document.createElement('a'); link.className='text-xs text-teal-300 underline'; link.href=`https://www.inaturalist.org/observations?lat=${currentSpot.lat}&lng=${currentSpot.lng}&radius=10&taxon_name=${encodeURIComponent(s.sci)}`;link.target='_blank';link.rel='noopener';link.textContent='Explore nearby iNaturalist records ↗';
         if(s.observation_url){link.href=s.observation_url;link.textContent='View source observation ↗';}
         card.append(title,sci,badge,statusNote,assessmentDetails,desc,note,link);grid.append(card);
     });
 }
-function filterSpecies(zone) {
-    activeZoneFilter=zone;
-    ['all','high','mid','low'].forEach(z=>{el('tab-'+z).classList.toggle('bg-teal-600',z===zone);el('tab-'+z).setAttribute('aria-pressed',z===zone);});
-    renderSpecies();
-}
 window.onload=async()=>{
     el('recommendation-text').setAttribute('role','status');
     if(filePreview){
         el('file-preview-notice').hidden=false;
-        el('wildlife-view').value='guide';
     }
     try {
-        const data=await api('/api/sites');sites=data.sites;species=data.species;
+        const data=await api('/api/sites');sites=data.sites;
         el('preset-select').replaceChildren();
         const stateLabel=document.createElement('label');stateLabel.className='state-filter';stateLabel.textContent='Browse a state or territory';
         const stateSelect=document.createElement('select');stateSelect.setAttribute('aria-label','Filter destinations by state or territory');stateSelect.add(new Option('All destinations','all'));
