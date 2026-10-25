@@ -54,13 +54,11 @@ The core destination data lives in app.py; expanded US entries live in coastal_s
 
 ## Organism field guide and artwork
 
-Cards include a conservation badge and filters for IUCN categories, NatureServe global ranks, not-evaluated/unassessed, and temporarily unavailable data. Classifications combine GBIF's IUCN category lookup, direct NatureServe Explorer searches, and iNaturalist conservation records. All cards receive an explicit label. No database covers every animal: missing records do not imply least concern, and a failed service is distinguished from no matching assessment. Database records and coverage details keep each source, region, original rank, and source link visible.
+Cards use standard IUCN conservation categories from GBIF and iNaturalist, with category filters, source links, and explicit not-evaluated/unassessed/unavailable labels. NatureServe global ranks and regional rank equivalents are not displayed or converted into IUCN categories. Exact GBIF species matches are required. Assessed global categories take precedence over not-evaluated records. Missing records do not imply least concern. Refresh guide statuses with `python prepare_statuses.py`, then `python prepare_preview.py` and restart/redeploy.
 
-Exact species matches are required for GBIF and NatureServe. Assessed global IUCN categories take precedence, then known global NatureServe ranks, then not-evaluated and regional fallback records. NatureServe G1?G5 ranks remain a separate system; the app does not relabel them as IUCN endangered categories. Lookups use bounded parallelism for nearby organisms and cache results for up to one day (five minutes on failure). Refresh the regional snapshot with `python prepare_statuses.py`, then `python prepare_preview.py` and restart/redeploy.
+Organism photos are circular bubbles with centered crops, soft blue rims and highlights. The source orientation and embedded metadata are respected; there are no rotation controls. The overall background descends from light blue to deep ocean navy, with a cream header and readable light panels.
 
-Photos fill their frame with a centered crop (`object-fit: cover`), respect embedded orientation metadata, and have no manual rotate controls or saved user rotations. This uses the source photo's orientation, not semantic body detection: it cannot infer an upright direction for every animal. Original image files are preserved. Centred crops may trim image edges.
-
-Sources: [GBIF Species API](https://techdocs.gbif.org/en/openapi/v1/species), [NatureServe Explorer API](https://explorer.natureserve.org/api-docs/), [iNaturalist API](https://api.inaturalist.org/v1/docs/).
+Sources: [GBIF Species API](https://techdocs.gbif.org/en/openapi/v1/species), [iNaturalist API](https://api.inaturalist.org/v1/docs/).
 
 Section 04 defaults to **Nearby records with photos** for every curated destination, NOAA station, or coordinate. It queries public, open-location, research-grade iNaturalist observations within 10 km, excludes captive observations, and selects CC0/CC BY/CC BY-SA images with credits and source links. It samples the most recent 100 matching observations and shows up to 12 distinct taxa, record dates, and counts within that sample. Results are cached for one hour.
 

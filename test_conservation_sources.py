@@ -19,26 +19,18 @@ class AdditionalSourcesTests(unittest.TestCase):
         self.assertFalse(record['equivalent'])
         self.assertIn('/species/12',record['source_url'])
 
-    def test_natureserve_preserves_its_own_ranking_system(self):
-        with patch.object(sources,'request_json',return_value=dict(results=[dict(scientificName='Test species',roundedGRank='G2',uniqueId='ELEMENT_GLOBAL.2.1')])):
-            record=sources.natureserve_assessment('Test species')
-        self.assertEqual(record['code'],'NS_G2')
-        self.assertEqual(record['label'],'Imperiled · G2')
-        self.assertFalse(record['equivalent'])
-
-    def test_ranked_natureserve_preferred_over_gbif_not_evaluated(self):
-        gbif=dict(code='NE',label='Not evaluated',source='IUCN category via GBIF',scope='Global assessment')
-        nature=dict(code='NS_G4',label='Apparently secure',source='NatureServe Explorer',scope='Global NatureServe rank')
-        with patch.object(sources,'gbif_assessment',return_value=gbif),patch.object(sources,'natureserve_assessment',return_value=nature):
-            result=sources.resolve_status('Test species')
-        self.assertEqual(result['code'],'NS_G4')
-        self.assertEqual(len(result['assessments']),2)
+    def test_regional_rank_equivalents_are_not_used_as_iucn_categories(self):
+        taxon=dict(conservation_status=dict(status='N2',iucn=40,authority='NatureServe',place=dict(name='Canada')))
+        with patch.object(sources,'gbif_assessment',return_value=None):
+            result=sources.resolve_status('Test species',taxon)
+        self.assertEqual(result['code'],'UNASSESSED')
+        self.assertEqual(result['assessments'],[])
 
     def test_no_assessment_differs_from_service_failure(self):
-        with patch.object(sources,'gbif_assessment',return_value=None),patch.object(sources,'natureserve_assessment',return_value=None):
+        with patch.object(sources,'gbif_assessment',return_value=None):
             result=sources.resolve_status('No match')
         self.assertEqual(result['code'],'UNASSESSED')
-        with patch.object(sources,'gbif_assessment',side_effect=TimeoutError),patch.object(sources,'natureserve_assessment',return_value=None):
+        with patch.object(sources,'gbif_assessment',side_effect=TimeoutError):
             result=sources.resolve_status('Unavailable')
         self.assertEqual(result['code'],'UNKNOWN')
         self.assertTrue(result['unavailable_sources'])
