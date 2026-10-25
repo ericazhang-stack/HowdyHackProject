@@ -133,7 +133,7 @@ class Handler(BaseHTTPRequestHandler):
             if not path.is_file():
                 return self.send(404, dict(error='Not found'))
             return self.send(200, path.read_bytes(), 'image/jpeg')
-        if url.path in ('/', '/index.html', '/explorer.js', '/preview-data.js', '/theme.css', '/sea-friends.svg'):
+        if url.path in ('/', '/index.html', '/explorer.js', '/ocean-audio.js', '/preview-data.js', '/theme.css', '/sea-friends.svg'):
             filename = url.path.lstrip('/') or 'index.html'
             content_type = 'image/svg+xml' if filename.endswith('.svg') else 'text/css' if filename.endswith('.css') else 'text/javascript' if filename.endswith('.js') else 'text/html'
             return self.send(200, (ROOT / filename).read_bytes(), content_type + '; charset=utf-8')

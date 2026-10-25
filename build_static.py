@@ -3,7 +3,7 @@ from pathlib import Path
 from shutil import copyfile
 
 ROOT = Path(__file__).resolve().parent
-PUBLIC_FILES = ('index.html', 'explorer.js', 'theme.css', 'sea-friends.svg', 'preview-data.js')
+PUBLIC_FILES = ('index.html', 'explorer.js', 'ocean-audio.js', 'theme.css', 'sea-friends.svg', 'preview-data.js')
 
 def build(output=None):
     output = Path(output) if output else ROOT / 'public'
