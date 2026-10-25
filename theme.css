@@ -29,3 +29,4 @@ body,.leaflet-container{font-family:'Nunito','Trebuchet MS',sans-serif}h1,h2,h3,
 /* Warm sunshine glow for hovered sea animals. */
 @media(hover:hover){.sea-sticker:hover{filter:drop-shadow(0 0 5px #fff8c5) drop-shadow(0 0 13px #ffe36a) drop-shadow(0 0 22px #ffd239b3)}}
 @media(hover:hover){.sea-sticker:hover{filter:drop-shadow(0 0 5px #fffde8) drop-shadow(0 0 13px #fff3b5) drop-shadow(0 0 22px #ffefae99)}}
+@media(hover:hover){.sea-sticker:hover{filter:drop-shadow(0 0 5px #fff0f6) drop-shadow(0 0 13px #fbcfe3) drop-shadow(0 0 22px #f5bfd999)}}
