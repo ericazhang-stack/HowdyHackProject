@@ -243,14 +243,11 @@ window.onload=async()=>{
         const friends=document.createElement('div');friends.className='hero-friends';
         ['octopus','turtle','crab','star'].forEach((name,i)=>friends.append(sticker(name,'friend-'+i)));document.querySelector('.hero').append(friends);
         document.querySelectorAll('main > section, .care').forEach((section,i)=>{
-            section.append(sticker(['fish','star','crab','turtle'][i%4],['friend-left','friend-bottom-right','friend-heading','friend-bottom-left','friend-inline'][i%5]));
-            section.append(sticker(['octopus','turtle','fish','star','crab'][i%5],i%2?'extra-friend-left':'extra-friend-right'));
+            section.append(sticker(['jellyfish','ray','whale','seahorse','seal'][i%5],['friend-left','friend-bottom-right','friend-heading','friend-bottom-left','friend-inline'][i%5]));
+            if(i<2)section.append(sticker(['fish','snail'][i],i%2?'extra-friend-left':'extra-friend-right'));
         });
-        document.querySelector('.tide-table-panel').append(sticker('fish','table-friend'));
-        document.querySelector('.station-browser').append(sticker('octopus','station-friend'));
-        const footerFriends=document.createElement('div');footerFriends.className='footer-friends';
-        footerFriends.append(sticker('turtle','footer-friend'),sticker('star','footer-friend'));
-        document.querySelector('footer').append(footerFriends);
+        document.querySelector('.tide-table-panel').append(sticker('crab','table-friend'));
+        document.querySelector('.station-browser').append(sticker('jellyfish','station-friend'));
         setInterval(renderCountdown,1000);
     } catch(error) {el('recommendation-text').textContent='Destination data could not be loaded. Refresh the page or try again shortly. '+error.message;}
 };
