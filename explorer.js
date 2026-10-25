@@ -1,6 +1,5 @@
 let sites = [], species = [], currentSpot, map, chart, nextLow, guideHeight, activeZoneFilter = 'all', requestNumber = 0;
 let nearbySpecies=[], wildlifeMessage='Choose a destination to load nearby records.', selectedStationMarker, upcomingLows=[];
-let photoObservers=[];
 const el = id => document.getElementById(id);
 const filePreview=window.location.protocol==='file:';
 const assetURL=path=>filePreview?path.replace(/^\//,'./'):path;
@@ -136,7 +135,6 @@ async function loadWildlife(siteId, request) {
     renderSpecies();
 }
 function renderSpecies(height = guideHeight) {
-    photoObservers.forEach(observer=>observer.disconnect());photoObservers=[];
     const grid=el('species-grid'); grid.replaceChildren();
     const nearby=el('wildlife-view').value==='nearby';
     el('wildlife-status').textContent=nearby?wildlifeMessage:'Regional habitat examples. These are not confirmed local sightings.';
@@ -159,27 +157,9 @@ function renderSpecies(height = guideHeight) {
             const figure=document.createElement('figure');figure.className='organism-photo';
             const image=document.createElement('img');image.src=assetURL(s.photo.url);image.alt=`${s.name} (${s.sci})`;image.loading='lazy';image.width=600;image.height=400;
             const frame=document.createElement('div');frame.className='photo-frame';frame.append(image);
-            let rotation=0;
-            const rotationKey='tidepool-photo-rotation:'+s.photo.url;
-            try{rotation=Number(localStorage.getItem(rotationKey))||0;}catch{}
-            const fit=()=>{
-                if(!image.naturalWidth||!frame.clientWidth)return;
-                const swapped=Math.abs(rotation%180)===90;
-                const width=swapped?image.naturalHeight:image.naturalWidth;
-                const height=swapped?image.naturalWidth:image.naturalHeight;
-                const scale=Math.min(frame.clientWidth/width,frame.clientHeight/height);
-                image.style.width=(image.naturalWidth*scale)+'px';image.style.height=(image.naturalHeight*scale)+'px';image.style.transform=`rotate(${rotation}deg)`;
-            };
-            image.onload=fit;
-            if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(fit);observer.observe(frame);photoObservers.push(observer);}
-            const tools=document.createElement('div');tools.className='photo-tools';tools.setAttribute('aria-label',`Adjust photo of ${s.name}`);
-            [['↶',-90,'Rotate photo left'],['↷',90,'Rotate photo right'],['Reset',0,'Reset photo rotation']].forEach(([label,degrees,description])=>{
-                const button=document.createElement('button');button.type='button';button.textContent=label;button.title=description;button.setAttribute('aria-label',description+' · '+s.name);
-                button.onclick=()=>{rotation=degrees===0?0:(rotation+degrees+360)%360;try{localStorage.setItem(rotationKey,String(rotation));}catch{}fit();};tools.append(button);
-            });
             const caption=document.createElement('figcaption');
             const credit=document.createElement('a');credit.href=s.photo.source;credit.target='_blank';credit.rel='noopener';credit.textContent=s.photo.attribution;
-            caption.append(credit);figure.append(frame,tools,caption);card.append(figure);
+            caption.append(credit);figure.append(frame,caption);card.append(figure);
             image.onerror=()=>{image.hidden=true;caption.textContent='Photo unavailable. '+s.photo.attribution;};
         }
         const title=document.createElement('h3'); title.className='text-teal-200 font-bold text-lg'; title.textContent=s.name;
@@ -188,12 +168,21 @@ function renderSpecies(height = guideHeight) {
         const badge=document.createElement('span');badge.className='conservation-badge status-'+status.code.toLowerCase();badge.textContent=`${status.label}${status.equivalent?' · equivalent':''}`;
         const statusNote=document.createElement('p');statusNote.className='conservation-source';statusNote.textContent=`${status.source} · ${status.scope}${status.equivalent?' · reported '+status.reported_status:''}`;
         if(status.source_url){const source=document.createElement('a');source.href=status.source_url;source.target='_blank';source.rel='noopener';source.textContent=' Assessment source ↗';statusNote.append(source);}
+        const assessmentDetails=document.createElement('details');assessmentDetails.className='assessment-details';
+        const summary=document.createElement('summary');summary.textContent='Database records & coverage';assessmentDetails.append(summary);
+        const list=document.createElement('ul');
+        (status.assessments || []).forEach(record=>{
+            const item=document.createElement('li');const source=document.createElement('a');source.href=record.source_url;source.target='_blank';source.rel='noopener';source.textContent=`${record.source}: ${record.label}${record.equivalent?' (equivalent)':''} · ${record.scope}`;item.append(source);list.append(item);
+        });
+        if(status.checked_sources){const item=document.createElement('li');item.textContent='Checked: '+status.checked_sources.join(', ');list.append(item);}
+        if(status.unavailable_sources?.length){const item=document.createElement('li');item.textContent='Some sources were unavailable; coverage may be incomplete.';list.append(item);}
+        assessmentDetails.append(list);
         const desc=document.createElement('p'); desc.className='text-sm text-slate-300 my-3'; desc.textContent=s.desc;
         const note=document.createElement('p'); note.className='text-xs text-sand-300';
         note.textContent=s.nearby ? `Last sampled record: ${s.observed_on || 'date unknown'} · ${s.sample_count} records in this sample. Intertidal zone unknown.` : `${s.zone} intertidal · Habitat guide; sighting not guaranteed. ${height !== undefined && s.zone==='low' && height>0.5 ? 'Lower pools may remain submerged at this predicted height.' : ''}`;
         const link=document.createElement('a'); link.className='text-xs text-teal-300 underline'; link.href=`https://www.inaturalist.org/observations?lat=${currentSpot.lat}&lng=${currentSpot.lng}&radius=10&taxon_name=${encodeURIComponent(s.sci)}`;link.target='_blank';link.rel='noopener';link.textContent='Explore nearby iNaturalist records ↗';
         if(s.observation_url){link.href=s.observation_url;link.textContent='View source observation ↗';}
-        card.append(title,sci,badge,statusNote,desc,note,link);grid.append(card);
+        card.append(title,sci,badge,statusNote,assessmentDetails,desc,note,link);grid.append(card);
     });
 }
 function filterSpecies(zone) {

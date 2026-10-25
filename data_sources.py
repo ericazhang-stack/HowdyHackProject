@@ -7,6 +7,8 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from conservation import status_for
+from conservation_sources import resolve_status
+from concurrent.futures import ThreadPoolExecutor
 
 ROOT = Path(__file__).resolve().parent
 CACHE = {}
@@ -103,7 +105,18 @@ def wildlife(site):
                              observation_url='https://www.inaturalist.org/observations/' + str(observation['id']),
                              photo=dict(url=url, attribution=photo.get('attribution') or 'iNaturalist contributor',
                                         license=photo['license_code'], source='https://www.inaturalist.org/photos/' + str(photo['id'])))
-    return dict(species=list(animals.values())[:12], radius_km=10, sampled_observations=len(data.get('results', [])),
+    selected=list(animals.values())[:12]
+    def enrich(animal):
+        taxon=next((t for t in detailed.values() if t.get('name')==animal['sci']),{})
+        # Keep status metadata already attached when detailed taxonomy was absent.
+        if not taxon:
+            taxon=next((o.get('taxon') or {} for o in data.get('results',[]) if (o.get('taxon') or {}).get('name')==animal['sci']),{})
+        animal['conservation']=resolve_status(animal['sci'],taxon)
+        return animal
+    if selected:
+        with ThreadPoolExecutor(max_workers=6) as pool:
+            selected=list(pool.map(enrich,selected))
+    return dict(species=selected, radius_km=10, sampled_observations=len(data.get('results', [])),
                 total_matching_observations=data.get('total_results', 0),
                 message='Recent research-grade, openly photographed records within 10 km. Marine-related groups can include freshwater and terrestrial relatives. Empty results mean no matching records, not absence of wildlife.',
                 fetched_at=datetime.now(timezone.utc).isoformat())

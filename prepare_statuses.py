@@ -5,6 +5,7 @@ from urllib.parse import urlencode
 import app
 from data_sources import get_json
 from conservation import status_for
+from conservation_sources import resolve_status
 
 if __name__=='__main__':
     statuses={}
@@ -12,7 +13,7 @@ if __name__=='__main__':
         matches=get_json('https://api.inaturalist.org/v1/taxa?'+urlencode(dict(q=animal['sci'],per_page=5)))
         taxon=next(t for t in matches['results'] if t['name']==animal['sci'])
         detail=get_json('https://api.inaturalist.org/v1/taxa/'+str(taxon['id']))['results'][0]
-        result=status_for(detail)
+        result=resolve_status(animal['sci'],detail)
         result['retrieved_at']=datetime.now(timezone.utc).isoformat()
         statuses[animal['sci']]=result
     (app.ROOT/'species_statuses.json').write_text(json.dumps(statuses,indent=2),encoding='utf-8')

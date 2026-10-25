@@ -1,80 +1,425 @@
 {
   "Mytilus californianus": {
-    "code": "LC",
-    "label": "Least concern",
-    "source": "NatureServe",
-    "scope": "Canada",
-    "equivalent": true,
-    "reported_status": "N4",
-    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.974066",
-    "retrieved_at": "2026-10-25T01:10:06.408414+00:00"
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
+    "equivalent": false,
+    "source_url": "https://www.gbif.org/species/2285680",
+    "matched_name": "Mytilus californianus Conrad, 1837",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Mytilus californianus Conrad, 1837",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2285680",
+        "matched_name": "Mytilus californianus Conrad, 1837",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Mytilus californianus Conrad, 1837",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_GNR",
+        "label": "Unranked \u00b7 GNR",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "GNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.974066"
+      },
+      {
+        "code": "LC",
+        "label": "Least concern",
+        "source": "NatureServe",
+        "scope": "Canada",
+        "equivalent": true,
+        "reported_status": "N4",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.974066"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:39.597656+00:00"
   },
   "Anthopleura elegantissima": {
     "code": "NE",
     "label": "Not evaluated",
-    "source": "NatureServe",
-    "scope": "Canada",
-    "equivalent": true,
-    "reported_status": "NNR",
-    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.971277",
-    "retrieved_at": "2026-10-25T01:10:07.222133+00:00"
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
+    "equivalent": false,
+    "source_url": "https://www.gbif.org/species/2256826",
+    "matched_name": "Anthopleura elegantissima (Brandt, 1835)",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Anthopleura elegantissima (Brandt, 1835)",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2256826",
+        "matched_name": "Anthopleura elegantissima (Brandt, 1835)",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Anthopleura elegantissima (Brandt, 1835)",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_GNR",
+        "label": "Unranked \u00b7 GNR",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "GNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.971277"
+      },
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "NatureServe",
+        "scope": "Canada",
+        "equivalent": true,
+        "reported_status": "NNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.971277"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:41.521027+00:00"
   },
   "Pisaster ochraceus": {
-    "code": "EN",
-    "label": "Endangered",
-    "source": "NatureServe",
-    "scope": "Canada",
-    "equivalent": true,
-    "reported_status": "N2",
-    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.973573",
-    "retrieved_at": "2026-10-25T01:10:07.865839+00:00"
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
+    "equivalent": false,
+    "source_url": "https://www.gbif.org/species/2273754",
+    "matched_name": "Pisaster ochraceus (Brandt, 1835)",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Pisaster ochraceus (Brandt, 1835)",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2273754",
+        "matched_name": "Pisaster ochraceus (Brandt, 1835)",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Pisaster ochraceus (Brandt, 1835)",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_GNR",
+        "label": "Unranked \u00b7 GNR",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "GNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.973573"
+      },
+      {
+        "code": "EN",
+        "label": "Endangered",
+        "source": "NatureServe",
+        "scope": "Canada",
+        "equivalent": true,
+        "reported_status": "N2",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.973573"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:45.338574+00:00"
   },
   "Strongylocentrotus purpuratus": {
-    "code": "LC",
-    "label": "Least concern",
-    "source": "NatureServe",
-    "scope": "Canada",
-    "equivalent": true,
-    "reported_status": "N4",
-    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.948847",
-    "retrieved_at": "2026-10-25T01:10:08.498959+00:00"
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
+    "equivalent": false,
+    "source_url": "https://www.gbif.org/species/2278852",
+    "matched_name": "Strongylocentrotus purpuratus (Stimpson, 1857)",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Strongylocentrotus purpuratus (Stimpson, 1857)",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2278852",
+        "matched_name": "Strongylocentrotus purpuratus (Stimpson, 1857)",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Strongylocentrotus purpuratus (Stimpson, 1857)",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_GNR",
+        "label": "Unranked \u00b7 GNR",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "GNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.948847"
+      },
+      {
+        "code": "LC",
+        "label": "Least concern",
+        "source": "NatureServe",
+        "scope": "Canada",
+        "equivalent": true,
+        "reported_status": "N4",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.948847"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:47.271445+00:00"
   },
   "Anthopleura xanthogrammica": {
-    "code": "UNKNOWN",
-    "label": "Status unavailable",
-    "source": "No assessment returned by iNaturalist",
-    "scope": "Unknown",
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
     "equivalent": false,
-    "source_url": "https://www.inaturalist.org",
-    "retrieved_at": "2026-10-25T01:10:09.176169+00:00"
+    "source_url": "https://www.gbif.org/species/2256852",
+    "matched_name": "Anthopleura xanthogrammica (Brandt, 1835)",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Anthopleura xanthogrammica (Brandt, 1835)",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2256852",
+        "matched_name": "Anthopleura xanthogrammica (Brandt, 1835)",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Anthopleura xanthogrammica (Brandt, 1835)",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:49.125895+00:00"
   },
   "Littorina littorea": {
     "code": "NE",
     "label": "Not evaluated",
-    "source": "NatureServe",
-    "scope": "Canada",
-    "equivalent": true,
-    "reported_status": "NNR",
-    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.808466",
-    "retrieved_at": "2026-10-25T01:10:09.952967+00:00"
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
+    "equivalent": false,
+    "source_url": "https://www.gbif.org/species/2301117",
+    "matched_name": "Littorina littorea (Linnaeus, 1758)",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Littorina littorea (Linnaeus, 1758)",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2301117",
+        "matched_name": "Littorina littorea (Linnaeus, 1758)",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Littorina littorea (Linnaeus, 1758)",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_GNR",
+        "label": "Unranked \u00b7 GNR",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "GNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.808466"
+      },
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "NatureServe",
+        "scope": "Canada",
+        "equivalent": true,
+        "reported_status": "NNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.808466"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:52.213252+00:00"
   },
   "Mytilus edulis": {
-    "code": "UNKNOWN",
-    "label": "Status unavailable",
-    "source": "No assessment returned by iNaturalist",
-    "scope": "Unknown",
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "IUCN category via GBIF",
+    "scope": "Global category \u00b7 no assessment in GBIF",
     "equivalent": false,
-    "source_url": "https://www.inaturalist.org",
-    "retrieved_at": "2026-10-25T01:10:10.635272+00:00"
+    "source_url": "https://www.gbif.org/species/8288896",
+    "matched_name": "Mytilus edulis Linnaeus, 1758",
+    "provider_details": {
+      "category": "NOT_EVALUATED",
+      "scientificName": "Mytilus edulis Linnaeus, 1758",
+      "taxonomicStatus": "ACCEPTED",
+      "code": "NE"
+    },
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/8288896",
+        "matched_name": "Mytilus edulis Linnaeus, 1758",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Mytilus edulis Linnaeus, 1758",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_GNR",
+        "label": "Unranked \u00b7 GNR",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "GNR",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.802381"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:53.941326+00:00"
   },
   "Strongylocentrotus droebachiensis": {
-    "code": "LC",
-    "label": "Least concern",
-    "source": "NatureServe",
-    "scope": "Canada",
-    "equivalent": true,
-    "reported_status": "N5",
+    "code": "NS_G5",
+    "label": "Secure \u00b7 G5",
+    "source": "NatureServe Explorer",
+    "scope": "Global NatureServe rank",
+    "equivalent": false,
+    "reported_status": "G5",
     "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.926445",
-    "retrieved_at": "2026-10-25T01:10:11.284392+00:00"
+    "assessments": [
+      {
+        "code": "NE",
+        "label": "Not evaluated",
+        "source": "IUCN category via GBIF",
+        "scope": "Global category \u00b7 no assessment in GBIF",
+        "equivalent": false,
+        "source_url": "https://www.gbif.org/species/2278856",
+        "matched_name": "Strongylocentrotus droebachiensis (O.F.M\u00fcller, 1776)",
+        "provider_details": {
+          "category": "NOT_EVALUATED",
+          "scientificName": "Strongylocentrotus droebachiensis (O.F.M\u00fcller, 1776)",
+          "taxonomicStatus": "ACCEPTED",
+          "code": "NE"
+        }
+      },
+      {
+        "code": "NS_G5",
+        "label": "Secure \u00b7 G5",
+        "source": "NatureServe Explorer",
+        "scope": "Global NatureServe rank",
+        "equivalent": false,
+        "reported_status": "G5",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.926445"
+      },
+      {
+        "code": "LC",
+        "label": "Least concern",
+        "source": "NatureServe",
+        "scope": "Canada",
+        "equivalent": true,
+        "reported_status": "N5",
+        "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.926445"
+      }
+    ],
+    "checked_sources": [
+      "GBIF / IUCN categories",
+      "NatureServe Explorer",
+      "iNaturalist"
+    ],
+    "unavailable_sources": [],
+    "retrieved_at": "2026-10-25T01:20:56.099693+00:00"
   }
 }

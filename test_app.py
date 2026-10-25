@@ -106,7 +106,7 @@ class ForecastTests(unittest.TestCase):
 
     def test_nearby_wildlife_uses_licensed_observation_photos(self):
         record=dict(id=123, observed_on='2026-10-24', taxon=dict(name='Test species',preferred_common_name='Test organism'),photos=[dict(id=99,url='https://static.inaturalist.org/photos/99/square.jpg',license_code='cc-by',attribution='Test photographer CC BY')])
-        with patch.object(data_sources,'get_json',return_value=dict(results=[record,record],total_results=2)):
+        with patch.object(data_sources,'get_json',return_value=dict(results=[record,record],total_results=2)), patch.object(data_sources,'resolve_status',return_value=dict(code='UNKNOWN')):
             result=data_sources.wildlife(app.SITES[0])
         self.assertEqual(len(result['species']),1)
         self.assertEqual(result['species'][0]['sample_count'],2)
