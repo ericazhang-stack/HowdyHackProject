@@ -233,10 +233,24 @@ window.onload=async()=>{
         el('preset-select').value='fitzgerald';handlePresetChange();
         const heroTags=document.querySelector('.hero-tags');heroTags.replaceChildren();
         [`${sites.length} curated destinations`,`${data.station_count} NOAA stations`,'Nearby wildlife photos'].forEach(text=>{const tag=document.createElement('span');tag.textContent=text;heroTags.append(tag);});
-        const sticker=(name,cls)=>{const node=document.createElement('span');node.className='sea-sticker '+cls;node.setAttribute('aria-hidden','true');node.innerHTML=`<svg viewBox="0 0 160 160"><use href="#${name}"></use></svg>`;return node;};
+        let stickerIndex=0;
+        const sticker=(name,cls)=>{
+            const node=document.createElement('span');node.className='sea-sticker '+cls;node.setAttribute('aria-hidden','true');
+            node.style.setProperty('--jiggle-delay',`${-(stickerIndex*.7)}s`);
+            node.style.setProperty('--jiggle-duration',`${4.5+(stickerIndex%4)*.6}s`);stickerIndex++;
+            node.innerHTML=`<svg viewBox="0 0 160 160" focusable="false"><use href="#${name}"></use></svg>`;return node;
+        };
         const friends=document.createElement('div');friends.className='hero-friends';
         ['octopus','turtle','crab','star'].forEach((name,i)=>friends.append(sticker(name,'friend-'+i)));document.querySelector('.hero').append(friends);
-        document.querySelectorAll('main > section, .care').forEach((section,i)=>section.append(sticker(['fish','star','crab','turtle'][i%4],['friend-left','friend-bottom-right','friend-heading','friend-bottom-left','friend-inline'][i%5])));
+        document.querySelectorAll('main > section, .care').forEach((section,i)=>{
+            section.append(sticker(['fish','star','crab','turtle'][i%4],['friend-left','friend-bottom-right','friend-heading','friend-bottom-left','friend-inline'][i%5]));
+            section.append(sticker(['octopus','turtle','fish','star','crab'][i%5],i%2?'extra-friend-left':'extra-friend-right'));
+        });
+        document.querySelector('.tide-table-panel').append(sticker('fish','table-friend'));
+        document.querySelector('.station-browser').append(sticker('octopus','station-friend'));
+        const footerFriends=document.createElement('div');footerFriends.className='footer-friends';
+        footerFriends.append(sticker('turtle','footer-friend'),sticker('star','footer-friend'));
+        document.querySelector('footer').append(footerFriends);
         setInterval(renderCountdown,1000);
     } catch(error) {el('recommendation-text').textContent='Destination data could not be loaded. Refresh the page or try again shortly. '+error.message;}
 };
