@@ -46,8 +46,7 @@ Internet is needed for tide providers, live iNaturalist records/photos, map tile
 - **All 48 curated US destinations now have regional NOAA tide references.** Existing station mappings are retained; other sites use the nearest prediction station within 75 km by straight-line distance. The UI shows that distance. This is an automatic regional reference, not validation that the station's tide matches the destination across headlands, estuaries or islands.
 - **US and US-territory stations in the downloaded NOAA prediction catalogue are searchable and paginated.** Select one to retrieve its table and nearby wildlife. Stations are separate from the 48 curated destinations and are not presented as confirmed tidepools. Availability varies by station and date.
 - Natural tidepool shores, rocky shores, sandy beaches, reefs, estuaries and tidal marshes are separately labeled. Sandy and marshy states have coastal nature alternatives; these are not presented as confirmed rocky tidepools.
-- Each destination has an approximate coordinate, state/country, IANA time zone and official visitor-information link. The state/country filter narrows the destination menu. My Location finds a listed destination within 150 km; location coordinates are not stored.
-- Custom coordinates can use a US NOAA station reference within 75 km; otherwise tide data is unavailable.
+- Each destination has an approximate coordinate, state/country, IANA time zone and official visitor-information link. The state/country filter narrows the destination menu.
 
 
 The core destination data lives in app.py; expanded US entries live in coastal_sites.py. Sources are linked in each entry and in the map popup. Check visitor guidance for access routes and current closures. Approximate markers do not establish safe or legal access to the water.

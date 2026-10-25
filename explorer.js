@@ -16,8 +16,6 @@ async function api(path) {
 }
 function handlePresetChange() {
     currentSpot = sites.find(s => s.id === el('preset-select').value);
-    el('input-lat').value = currentSpot.lat;
-    el('input-lng').value = currentSpot.lng;
     el('active-spot-name').textContent = currentSpot.name;
     el('date-label').textContent = `Visit date · ${currentSpot.timezone.replaceAll('_',' ')}`;
     el('site-info').href = currentSpot.source;
@@ -25,29 +23,6 @@ function handlePresetChange() {
     el('noaa-station-badge').textContent=currentSpot.station ? `NOAA #${currentSpot.station}` : 'Location guide only';
     if (map) map.setView([currentSpot.lat, currentSpot.lng], 12);
     refreshData();
-}
-function handleCustomCoords() {
-    const lat = Number(el('input-lat').value), lng = Number(el('input-lng').value);
-    if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat)>90 || Math.abs(lng)>180) {
-        el('recommendation-text').textContent = 'Enter valid latitude and longitude.'; return;
-    }
-    // Find a supported destination, never pretend arbitrary coordinates are verified pools.
-    const distance = s => {
-        const rad = x => x*Math.PI/180;
-        const a = Math.sin(rad(s.lat-lat)/2)**2 + Math.cos(rad(lat))*Math.cos(rad(s.lat))*Math.sin(rad(s.lng-lng)/2)**2;
-        return 6371*2*Math.asin(Math.sqrt(Math.min(1,a)));
-    };
-    const closest = [...sites].sort((a,b) => distance(a)-distance(b))[0];
-    if (distance(closest)>150) {
-        el('recommendation-text').textContent = 'No listed destination within 150 km. Browse the US destination menu.'; return;
-    }
-    closest.select();
-}
-function useMyLocation() {
-    if (!navigator.geolocation) { el('recommendation-text').textContent = 'Location is unavailable; choose a destination.'; return; }
-    navigator.geolocation.getCurrentPosition(pos => {
-        el('input-lat').value=pos.coords.latitude; el('input-lng').value=pos.coords.longitude; handleCustomCoords();
-    }, () => {el('recommendation-text').textContent='Location permission unavailable; choose a destination.';});
 }
 async function refreshData() {
     const request = ++requestNumber;
@@ -221,17 +196,11 @@ window.onload=async()=>{
         function chooseSite(s){
             if(!sites.some(existing=>existing.id===s.id))sites.push(s);
             stateSelect.value='all';populateDestinations();el('preset-select').value=s.id;handlePresetChange();
-            if(map && (s.id.startsWith('noaa-') || s.id.startsWith('coordinates:'))){
+            if(map && s.id.startsWith('noaa-')){
                 if(selectedStationMarker)map.removeLayer(selectedStationMarker);
                 selectedStationMarker=L.marker([s.lat,s.lng]).addTo(map).bindPopup(document.createTextNode(s.name));
             }
         }
-        window.exploreCoordinates=async()=>{
-            try{
-                const site=await api(`/api/location?lat=${encodeURIComponent(el('input-lat').value)}&lng=${encodeURIComponent(el('input-lng').value)}`);
-                site.select=()=>chooseSite(site);chooseSite(site);
-            }catch(error){el('recommendation-text').textContent=error.message;}
-        };
         sites.forEach(s=>{s.select=()=>chooseSite(s);});
         let stationRequest=0,stationOffset=0,stationTimer;
         async function searchStations(offset=0){
