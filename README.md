@@ -1,4 +1,4 @@
-﻿# Tide and Seek
+# Tide and Seek
 
 **Small pools. Whole new worlds.**
 
@@ -40,6 +40,8 @@ Nearby wildlife results come from research-grade iNaturalist observations within
 No API keys or third-party Python packages are required for the implemented integrations.
 
 ## Try it
+
+**Live website:** [Open Tide and Seek](https://howdyhackproject.vercel.app/index.html) ? use the hosted app without running a local server.
 
 **Locally:** With Python installed, double-click `start_local.pyw`. It opens the full website at **http://127.0.0.1:8000**. Alternatively, run `python app.py`.
 
