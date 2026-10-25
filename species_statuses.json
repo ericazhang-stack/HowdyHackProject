@@ -1,0 +1,80 @@
+{
+  "Mytilus californianus": {
+    "code": "LC",
+    "label": "Least concern",
+    "source": "NatureServe",
+    "scope": "Canada",
+    "equivalent": true,
+    "reported_status": "N4",
+    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.974066",
+    "retrieved_at": "2026-10-25T01:10:06.408414+00:00"
+  },
+  "Anthopleura elegantissima": {
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "NatureServe",
+    "scope": "Canada",
+    "equivalent": true,
+    "reported_status": "NNR",
+    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.971277",
+    "retrieved_at": "2026-10-25T01:10:07.222133+00:00"
+  },
+  "Pisaster ochraceus": {
+    "code": "EN",
+    "label": "Endangered",
+    "source": "NatureServe",
+    "scope": "Canada",
+    "equivalent": true,
+    "reported_status": "N2",
+    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.973573",
+    "retrieved_at": "2026-10-25T01:10:07.865839+00:00"
+  },
+  "Strongylocentrotus purpuratus": {
+    "code": "LC",
+    "label": "Least concern",
+    "source": "NatureServe",
+    "scope": "Canada",
+    "equivalent": true,
+    "reported_status": "N4",
+    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.948847",
+    "retrieved_at": "2026-10-25T01:10:08.498959+00:00"
+  },
+  "Anthopleura xanthogrammica": {
+    "code": "UNKNOWN",
+    "label": "Status unavailable",
+    "source": "No assessment returned by iNaturalist",
+    "scope": "Unknown",
+    "equivalent": false,
+    "source_url": "https://www.inaturalist.org",
+    "retrieved_at": "2026-10-25T01:10:09.176169+00:00"
+  },
+  "Littorina littorea": {
+    "code": "NE",
+    "label": "Not evaluated",
+    "source": "NatureServe",
+    "scope": "Canada",
+    "equivalent": true,
+    "reported_status": "NNR",
+    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.808466",
+    "retrieved_at": "2026-10-25T01:10:09.952967+00:00"
+  },
+  "Mytilus edulis": {
+    "code": "UNKNOWN",
+    "label": "Status unavailable",
+    "source": "No assessment returned by iNaturalist",
+    "scope": "Unknown",
+    "equivalent": false,
+    "source_url": "https://www.inaturalist.org",
+    "retrieved_at": "2026-10-25T01:10:10.635272+00:00"
+  },
+  "Strongylocentrotus droebachiensis": {
+    "code": "LC",
+    "label": "Least concern",
+    "source": "NatureServe",
+    "scope": "Canada",
+    "equivalent": true,
+    "reported_status": "N5",
+    "source_url": "https://explorer.natureserve.org/Taxon/ELEMENT_GLOBAL.2.926445",
+    "retrieved_at": "2026-10-25T01:10:11.284392+00:00"
+  }
+}

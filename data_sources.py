@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
+from conservation import status_for
 
 ROOT = Path(__file__).resolve().parent
 CACHE = {}
@@ -74,6 +75,14 @@ def wildlife(site):
                   quality_grade='research', photos='true', photo_license='cc0,cc-by,cc-by-sa',
                   captive='false', geoprivacy='open', per_page=100, order_by='observed_on', order='desc')
     data = get_json('https://api.inaturalist.org/v1/observations?' + urlencode(params), ttl=3600)
+    ids=list(dict.fromkeys(str(o['taxon']['id']) for o in data.get('results',[]) if (o.get('taxon') or {}).get('id')))[:12]
+    detailed={}
+    if ids:
+        try:
+            details=get_json('https://api.inaturalist.org/v1/taxa/'+','.join(ids),ttl=86400)
+            detailed={t['id']:t for t in details.get('results',[])}
+        except Exception:
+            pass  # Photo records remain usable; missing status stays explicitly unknown.
     animals = {}
     for observation in data.get('results', []):
         taxon = observation.get('taxon') or {}
@@ -88,6 +97,7 @@ def wildlife(site):
         if not url.startswith(('https://inaturalist-open-data.s3.amazonaws.com/', 'https://static.inaturalist.org/')):
             continue
         animals[name] = dict(name=taxon.get('preferred_common_name') or name, sci=name, zone='unclassified',
+                             conservation=status_for(detailed.get(taxon.get('id'),taxon)),
                              nearby=True, observed_on=observation.get('observed_on'), sample_count=1,
                              desc='Recorded within 10 km in public iNaturalist observations. Not a prediction of what is in this pool.',
                              observation_url='https://www.inaturalist.org/observations/' + str(observation['id']),

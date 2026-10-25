@@ -10,6 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 from coastal_sites import coastal_sites
 from data_sources import load_catalogue, assign_station, station_site, coordinate_site, wildlife
 from tide_curve import with_fallback_curve
+from conservation import status_for
 
 ROOT = Path(__file__).resolve().parent
 SITES = [
@@ -64,6 +65,10 @@ if PHOTO_FILE.exists():
     photos = json.loads(PHOTO_FILE.read_text(encoding='utf-8'))
     for animal in SPECIES:
         animal['photo'] = photos.get(animal['sci'])
+STATUS_FILE=ROOT/'species_statuses.json'
+statuses=json.loads(STATUS_FILE.read_text(encoding='utf-8')) if STATUS_FILE.exists() else {}
+for animal in SPECIES:
+    animal['conservation']=statuses.get(animal['sci'],status_for({}))
 
 def fetch(params):
     key = urlencode(params)
