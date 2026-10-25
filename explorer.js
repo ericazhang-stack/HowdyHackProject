@@ -202,22 +202,6 @@ window.onload=async()=>{
             }
         }
         sites.forEach(s=>{s.select=()=>chooseSite(s);});
-        let stationRequest=0,stationOffset=0,stationTimer;
-        async function searchStations(offset=0){
-            const request=++stationRequest;stationOffset=offset;
-            el('station-results').replaceChildren();el('station-status').textContent='Searching NOAA stations…';
-            try{
-                const result=await api(`/api/stations?q=${encodeURIComponent(el('station-search').value)}&offset=${offset}`);
-                if(request!==stationRequest)return;
-                el('station-status').textContent=`${result.total} matching prediction stations. Showing ${result.stations.length ? offset+1 : 0}–${Math.min(offset+30,result.total)}. Catalogue updated ${result.catalogue_updated_at?.slice(0,10) || 'unknown'}. NOAA station times are displayed in UTC.`;
-                result.stations.forEach(station=>{const button=document.createElement('button');button.className='station-result';button.textContent=`${station.name} · ${station.region} · #${station.station} · ${station.station_type==='S'?'high/low table':'tide predictions'}`;button.onclick=()=>{station.select=()=>chooseSite(station);chooseSite(station);};el('station-results').append(button);});
-                el('stations-next').disabled=offset+30>=result.total;
-                el('stations-prev').disabled=offset===0;
-            }catch(error){if(request===stationRequest)el('station-status').textContent=error.message;}
-        }
-        el('station-search').oninput=()=>{clearTimeout(stationTimer);stationTimer=setTimeout(()=>searchStations(),300);};
-        el('stations-next').onclick=()=>searchStations(stationOffset+30);el('stations-prev').onclick=()=>searchStations(Math.max(0,stationOffset-30));
-        searchStations();
         if(typeof L!=='undefined') {
             const worldBounds=L.latLngBounds([[-85,-180],[85,180]]);
             map=L.map('map',{minZoom:0,maxZoom:19,maxBounds:worldBounds,maxBoundsViscosity:1.0,worldCopyJump:false}).setView([36.5,-121],6);
@@ -247,7 +231,6 @@ window.onload=async()=>{
             if(i<2)section.append(sticker(['fish','snail'][i],i%2?'extra-friend-left':'extra-friend-right'));
         });
         document.querySelector('.tide-table-panel').append(sticker('crab','table-friend'));
-        document.querySelector('.station-browser').append(sticker('jellyfish','station-friend'));
         setInterval(renderCountdown,1000);
     } catch(error) {el('recommendation-text').textContent='Destination data could not be loaded. Refresh the page or try again shortly. '+error.message;}
 };
