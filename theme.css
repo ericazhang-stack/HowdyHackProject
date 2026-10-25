@@ -28,3 +28,4 @@ body,.leaflet-container{font-family:'Nunito','Trebuchet MS',sans-serif}h1,h2,h3,
 .hero-headline{width:fit-content;max-width:100%;pointer-events:none}.hero-headline .headline-line{pointer-events:auto}.hero-friends{z-index:4;pointer-events:none}.hero-friends .sea-sticker{pointer-events:auto}.hero-friends .sea-sticker>svg{pointer-events:none}
 /* Warm sunshine glow for hovered sea animals. */
 @media(hover:hover){.sea-sticker:hover{filter:drop-shadow(0 0 5px #fff8c5) drop-shadow(0 0 13px #ffe36a) drop-shadow(0 0 22px #ffd239b3)}}
+@media(hover:hover){.sea-sticker:hover{filter:drop-shadow(0 0 5px #fffde8) drop-shadow(0 0 13px #fff3b5) drop-shadow(0 0 22px #ffefae99)}}
